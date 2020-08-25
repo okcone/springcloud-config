@@ -1,3 +1,4 @@
-server:
+config:
   port: 1002
   name: hello world
+  info: sunshine 1002
