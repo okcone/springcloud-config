@@ -1,4 +1,4 @@
 config:
   port: 1002
   name: hello world
-  info: sunshine 1002 -v3
+  info: sunshine 1002 -v31
