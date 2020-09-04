@@ -1,0 +1,201 @@
+server:
+  port: 6001
+
+spring:
+  application:
+    name: zuul-server
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka7003.com:7003/eureka/
+  instance:
+    prefer-ip-address: true
+
+#路由映射规则
+zuul:
+  routes:
+  ###############配置方式一
+    #cloud-payment-zuul-service: /provider/service/**
+  ###############配置方式二
+    provider-service:
+      path: /provider/service/**
+      serviceId: cloud-payment-zuul-service
+      #url: http://www.baidu.com/
+
+###################################
+#actuator  启用所有的监控端点 “*”号代表启用所有的监控端点，可以单独启用，例如，health，info，metrics
+#  spring boot 升为 2.0 后，为了安全，默认 Actuator 只暴露2个端点，heath 和 info
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+      health:
+        show-details: ALWAYS
+
+
+
+
+############################脱离eureka进行访问，并使之具有负载均衡和隔离的机制
+#ribbon:
+#  eureka:
+#    enabled: false
+#
+#zuul:
+#  routes:
+#    provider-service:
+#      path: /provider/**
+#      serviceId: baidu-oss
+#baidu-oss:
+#  ribbon:
+#      listOfServers: http://www.baidu.com/,http://www.taobao.com/
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 忽略所有的微服务
+#zuul:
+#  ignored-services: "*"
+
+# 忽略指定的微服务，多个以逗号分隔
+#zuul:
+#  ignored-services: product-provider,product-consumer-8201
+
+# 忽略所有微服务，只路由指定的微服务
+#zuul:
+#  ignored-services: "*"
+#  routes:
+##    product-provider: /product/**
+#    product-route-name:
+#      path: /product/**
+#      serviceId : product-provider
+
+# 通过path和url访问到具体的某台机器上
+#zuul:
+#  routes:
+#    product-provider:
+#      path: /product/**
+#      url: http://www.baidu.com/
+
+# 脱离eureka进行访问，并使之具有负载均衡和隔离的机制等
+#ribbon:
+#  eureka:
+#    enabled: false
+#zuul:
+#  routes:
+#    product-provider:
+#      path: /product/**
+#      serviceId : baidu-oschina
+#
+#baidu-oschina:
+#  ribbon:
+#    listOfServers: http://www.baidu.com/,https://gitee.com:443/
+#    ConnectTimeout: 1000
+#    ReadTimeout: 3000
+#    MaxTotalHttpConnections: 500
+#    MaxConnectionsPerHost: 100
+
+# 转发前是否去掉路由前缀和增加一个通用的路由前缀
+#zuul:
+#  strip-prefix: true
+#  routes:
+#    product-provider:
+#      path : /product/**
+#      stripPrefix : false
+#    product-consumer:
+#      path: /consumer/**
+#      serviceId : product-consumer-8201
+#  prefix: /api
+
+# 忽略某些路径不进行路由
+#zuul:
+#  ignored-patterns: /**/selectOne/**
+#  routes:
+#    product-provider: /product/**
+
+# zuul 忽略敏感头
+#zuul:
+#  routes:
+#    product-consumer:
+#      path: /consumer/**
+#      serviceId : product-consumer-8201
+#    product-provider:
+#      path: /product/**
+#      serviceId : product-provider
+#      sensitiveHeaders:                                # 取消敏感头，让其可以传递到这个服务中
+#  sensitive-headers: Cookie,Set-Cookie,Authorization  # 全局敏感头，默认这些头不向下游的服务传递这些头，如果需要传递，可以取消这个地方的头设置，
+
+# 忽略头
+#zuul:
+#  routes:
+#    product-provider:
+#      path: /product/**
+#      serviceId : product-provider
+#  ignored-headers: token  # 全局忽略头，忽略 token 这个请求头，不向下游服务传递这个token请求头
+
+# spring security 在classpath 下会忽略的头
+#zuul:
+#  routes:
+#    product-provider:
+#      path: /product/**
+#      serviceId : product-provider
+#  ignore-security-headers: false  # 为true会忽略spring security安全头，如果下游需要用到需要设置成false
+
+# 本地跳转和路由优先级
+#zuul:
+#  routes:
+#    local-forward-product-provider:
+#      path: /product/local/**
+#      url: forward:/product/local
+#    product-provider:
+#      path: /product/**
+#      serviceId : product-provider
+
+
+# 配置 zuul 网关的超时
+#ribbon:  # ribbon 的超时
+#  ReadTimeout:6000
+#  ConnectTimeout:6000
+#  MaxAutoRetries:1
+#  MaxAutoRetriesNextServer:1
+#
+#hystrix:  # 配置 hystrix 的超时
+#  command:
+#    default:
+#      execution:
+#        isolation:
+#          thread:
+#            timeoutInMilliseconds: 48000  # 默认计算公式 (ribbon.ConnectTimeout + ribbon.ReadTimeout) * (ribbon.MaxAutoRetries + 1) * (ribbon.MaxAutoRetriesNextServer + 1)，当配置了后 hystrix 的超时以这个配置的为准，而不会使用默认的公式进行计算
+#
+#zuul:
+#  host:
+#    connect-timeout-millis: 2000  # 这2个是配置当不是zuul 中不是使用 serviceId 而是使用 url 进行访问的时候的超时配置
+#    socket-timeout-millis: 10000
+
+# zuul 中使用ribbon进行负载均衡调用，ribbon是在第一次调用时由Spring Cloud延时加载，现在修改成程序启动时就立即加载
+#zuul:
+#  ribbon:
+#    eager-load:
+#      enabled: true
+
+#logging:
+#  level:
+#    com.netflix: debug
+
+
+
+#zuul:
+#  ignored-services: "*" # * 表示不自动代理所有服务
+#  routes:
+#    product-provider: /product-provider/**

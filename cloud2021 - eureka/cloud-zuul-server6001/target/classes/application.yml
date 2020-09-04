@@ -1,0 +1,64 @@
+server:
+  port: 6001
+
+spring:
+  application:
+    name: zuul-server
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka7003.com:7003/eureka/
+  instance:
+    prefer-ip-address: true
+
+#路由映射规则
+zuul:
+  routes:
+  ###############配置方式一
+    #cloud-payment-zuul-service: /provider/service/**
+  ###############配置方式二
+    provider-service:
+      path: /provider/service/**
+      serviceId: cloud-payment-zuul-service
+      #url: http://www.baidu.com/
+
+
+
+
+
+
+############################脱离eureka进行访问，并使之具有负载均衡和隔离的机制
+#ribbon:
+#  eureka:
+#    enabled: false
+#
+#zuul:
+#  routes:
+#    provider-service:
+#      path: /provider/**
+#      serviceId: baidu-oss
+#baidu-oss:
+#  ribbon:
+#      listOfServers: http://www.baidu.com/,http://www.taobao.com/
+
+
+
+
+
+
+
+
+
+
+###################################
+#actuator  启用所有的监控端点 “*”号代表启用所有的监控端点，可以单独启用，例如，health，info，metrics
+#  spring boot 升为 2.0 后，为了安全，默认 Actuator 只暴露2个端点，heath 和 info
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+      health:
+        show-details: ALWAYS
