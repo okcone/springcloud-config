@@ -1,5 +1,5 @@
 config:
-  port: 1001
+  port: 1002
   name: hello world
   info: sunshine 1001
 
